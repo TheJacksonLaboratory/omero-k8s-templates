@@ -1,0 +1,7 @@
+*secrets.yaml
+*secrets.yml
+*secret.yaml
+*secret.yml
+*.key
+*.crt
+.DS_Store

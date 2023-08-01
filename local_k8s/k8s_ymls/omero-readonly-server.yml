@@ -1,0 +1,86 @@
+# Based on https://raw.githubusercontent.com/GoogleCloudPlatform/gke-rbac-demo/master/terraform/modules/instance/manifests/hello-server.yaml
+
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: omero-readonly-server
+  name: omero-readonly-server
+spec:
+  ports:
+  - name: omero
+    port: 4063
+    protocol: TCP
+    targetPort: 4063
+  - name: omero-ssl
+    port: 4064
+    protocol: TCP
+    targetPort: 4064
+
+  # Load balance requests across all pods labeled with app=hello-server
+  selector:
+    app: omero-readonly-server
+
+  # Disable session affinity, each request may be routed to a new pod
+  sessionAffinity: None
+
+  # Expose the service internally only
+  type: LoadBalancer
+
+---
+# Run a vanilla omero server instance
+# https://hub.docker.com/r/openmicroscopy/omero-server
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: omero-readonly-server
+  labels:
+    app: omero-readonly-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: omero-readonly-server
+  template:
+    metadata:
+      labels:
+        app: omero-readonly-server
+    spec:
+      containers:
+        - name: omero-readonly-server
+          image: omero-server
+          imagePullPolicy: Never
+          env:
+            - name: CONFIG_omero_db_name
+              value: omero
+            - name: CONFIG_omero_db_host
+              value: database
+            - name: CONFIG_omero_db_user
+              valueFrom:
+                secretKeyRef:
+                  name: omero-readonly-secrets
+                  key: CONFIG_omero_db_user
+            - name: CONFIG_omero_db_pass
+              valueFrom:
+                secretKeyRef:
+                  name: omero-readonly-secrets
+                  key: CONFIG_omero_db_pass
+            - name: ROOTPASS
+              value: omero_readonly
+            - name: CONFIG_omero_cluster_read__only_db 
+              value: 'true'
+            - name: CONFIG_omero_cluster_read__only_repo
+              value: 'true'
+          ports:
+          - containerPort: 4063
+            protocol: TCP
+          - containerPort: 4064
+            protocol: TCP
+          volumeMounts:
+          - name: omero-data
+            mountPath: /OMERO
+            readOnly: true
+      volumes:
+        - name: omero-data
+          persistentVolumeClaim:
+            claimName: pvc-name

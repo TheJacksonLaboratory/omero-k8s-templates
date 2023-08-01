@@ -1,0 +1,73 @@
+# Based on https://raw.githubusercontent.com/GoogleCloudPlatform/gke-rbac-demo/master/terraform/modules/instance/manifests/hello-server.yaml
+
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: omero-server
+  name: omero-server
+spec:
+  ports:
+  - name: omero
+    port: 4063
+    protocol: TCP
+    targetPort: 4063
+  - name: omero-ssl
+    port: 4064
+    protocol: TCP
+    targetPort: 4064
+
+  # Load balance requests across all pods labeled with app=hello-server
+  selector:
+    app: omero-server
+
+  # Disable session affinity, each request may be routed to a new pod
+  sessionAffinity: None
+
+  # Expose the service internally only
+  type: LoadBalancer
+
+---
+# Run a vanilla omero server instance
+# https://hub.docker.com/r/openmicroscopy/omero-server
+apiVersion: v1
+kind: Pod
+metadata:
+  name: omero-server
+  labels:
+    app: omero-server
+spec:
+  containers:
+    - name: omero-server
+      image: omero-server
+      imagePullPolicy: Never
+      env:
+        - name: CONFIG_omero_db_name
+          value: omero
+        - name: CONFIG_omero_db_host
+          value: database
+        - name: CONFIG_omero_db_user
+          valueFrom:
+            secretKeyRef:
+              name: omero-secrets
+              key: CONFIG_omero_db_user
+        - name: CONFIG_omero_db_pass
+          valueFrom:
+            secretKeyRef:
+              name: omero-secrets
+              key: CONFIG_omero_db_pass
+        - name: ROOTPASS
+          value: omero
+      ports:
+      - containerPort: 4063
+        protocol: TCP
+      - containerPort: 4064
+        protocol: TCP
+      volumeMounts:
+        - name: omero-data
+          mountPath: /OMERO
+  volumes:
+    - name: omero-data
+      persistentVolumeClaim:
+        claimName: pvc-name
+        readOnly: false
