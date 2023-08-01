@@ -68,6 +68,6 @@ spec:
           mountPath: /OMERO
   volumes:
     - name: omero-data
-      persistentVolumeClaim:
-        claimName: pvc-name
-        readOnly: false
+      nfs: 
+        server: 0.0.0.0 # IP address of your NFS service
+        path: "/nfsshare"
