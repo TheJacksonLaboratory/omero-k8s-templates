@@ -1,8 +1,6 @@
-# Dockerfile for an omero web client
+# Dockerfile for omero web client
 FROM debian:buster
 # FROM ubuntu:bionic
-
-# Following https://github.com/ome/omero-web-docker
 
 RUN apt-get update
 RUN apt-get install -y unzip python3 python3-venv dumb-init python3-dev zlib1g-dev libjpeg-dev build-essential
@@ -32,8 +30,10 @@ RUN /opt/omero/web/venv3/bin/pip install \
 # Startup
 ADD entrypoint.sh /usr/local/bin/
 RUN chmod 755 /usr/local/bin/entrypoint.sh
-COPY startup /startup/
+RUN mkdir /startup
+ADD 50-config.py 60-default-web-config.sh 70-copy-logo.sh 98-cleanprevious.sh 99-run.sh /startup/
 ADD 01-default-webapps.omero /opt/omero/web/config/
+ADD logo.png /opt/omero/web/config
 
 USER omero-web
 

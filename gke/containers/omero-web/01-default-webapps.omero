@@ -1,0 +1,19 @@
+# OMERO.web configuration
+
+# whitenoise: server 
+config append -- omero.web.middleware '{"index": 0, "class": "whitenoise.middleware.WhiteNoiseMiddleware"}'
+
+# omero-iviewer
+config append -- omero.web.apps '"omero_iviewer"'
+config append -- omero.web.open_with '["omero_iviewer", "omero_iviewer_index", {"supported_objects":["images", "dataset", "well"], "script_url": "omero_iviewer/openwith.js", "label": "OMERO.iviewer"}]'
+
+# omero-figure
+config append -- omero.web.apps '"omero_figure"'
+config append -- omero.web.open_with '["omero_figure", "new_figure", {"supported_objects": ["images"], "target": "_blank", "label": "OMERO.figure"}]'
+
+# Top links
+config set -- omero.web.ui.top_links '[["Data", "webindex", {"title": "Browse Data via Projects, Tags etc"}],["History", "history", {"title": "History"}], ["Help", "https://help.openmicroscopy.org/", {"title":"Open OMERO user guide in a new tab", "target":"new"}], ["Figure", "figure_index", {"title": "Open Figure in new tab", "target": "_blank"}]]'
+
+# Others
+config set -- omero.web.session_cookie_secure False
+

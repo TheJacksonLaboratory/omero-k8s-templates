@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginxconfigmap
+data:
+  nginx.conf: |
+    upstream backend {
+    server 127.0.0.1:4080;
+    }
+    server {
+        listen 80 default_server;
+        server_name localhost;
+        
+        location / {
+            proxy_pass http://backend;
+        }
+
+        location /static {
+            alias /opt/omero-static;
+            autoindex off;
+        }
+    }

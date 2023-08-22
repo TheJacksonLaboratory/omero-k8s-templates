@@ -1,0 +1,87 @@
+# Based on https://raw.githubusercontent.com/GoogleCloudPlatform/gke-rbac-demo/master/terraform/modules/instance/manifests/hello-server.yaml
+
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: omero-server
+  name: omero-server
+  annotations:
+    # Request an internal IP address: https://cloud.google.com/kubernetes-engine/docs/how-to/internal-load-balancing
+    networking.gke.io/load-balancer-type: "External"
+spec:
+  ports:
+  - name: omero
+    port: 4063
+    protocol: TCP
+    targetPort: 4063
+  - name: omero-ssl
+    port: 4064
+    protocol: TCP
+    targetPort: 4064
+
+  # Load balance requests across all pods labeled with app=hello-server
+  selector:
+    app: omero-server
+
+  # Disable session affinity, each request may be routed to a new pod
+  sessionAffinity: None
+
+  # Expose the service internally only
+  type: LoadBalancer
+
+---
+# Run a vanilla omero server instance
+# https://hub.docker.com/r/openmicroscopy/omero-server
+apiVersion: v1
+kind: Pod
+metadata:
+  name: omero-server
+  labels:
+    app: omero-server
+spec:
+  containers:
+    - name: omero-server
+      image: us-east1-docker.pkg.dev/<GCP PROJECT NAME>/<ARTIFACT REGISTRY REPO>/omero-server:latest
+      imagePullPolicy: Always
+      env:
+        - name: CONFIG_omero_db_name
+          value: <DB NAME>
+        - name: CONFIG_omero_db_host
+          value: <CLOUD SQL IP>
+        - name: CONFIG_omero_db_user
+          valueFrom:
+            secretKeyRef:
+              name: omero-secrets
+              key: CONFIG_omero_db_user
+        - name: CONFIG_omero_db_pass
+          valueFrom:
+            secretKeyRef:
+              name: omero-secrets
+              key: CONFIG_omero_db_pass
+      ports:
+      - containerPort: 4063
+        protocol: TCP
+      - containerPort: 4064
+        protocol: TCP
+      volumeMounts:
+      - name: files_mount
+        mountPath: /OMERO
+      securityContext:
+        privileged: true
+        capabilities:
+          add:
+            - SYS_ADMIN
+      lifecycle:
+        postStart:
+          exec:
+            command: ["gcsfuse", "<GCS BUCKET NAME>", "/data_mount"]
+        preStop:
+          exec:
+            command: ["fusermount", "-u", "/data_mount"]
+  volumes:
+    - name: files_mount
+      nfs: 
+        server: <FILESTORE IP>
+        path: /mountdir
+        

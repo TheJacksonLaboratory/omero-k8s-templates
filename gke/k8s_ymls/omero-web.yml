@@ -22,11 +22,16 @@ spec:
         fsGroup: 1000
       containers:
         - name: omero-web
-          image: omero-web
-          imagePullPolicy: Never
+          image: us-east1-docker.pkg.dev/<GCP PROJECT NAME>/<ARTIFACT REGISTRY REPO>/omero-web:latest
+          imagePullPolicy: Always
           env:
             - name: CONFIG_omero_web_server__list
               value: '[["omero-readonly-server", 4064, "omero"]]'
+            - name: CONFIG_omero_web_top__logo
+              value: '/static/webgateway/img/logo.png'
+          #ports:
+          #- containerPort: 4080
+          #  protocol: TCP
           volumeMounts:
             - name: omero-static
               mountPath: /opt/omero/web/OMERO.web/var
@@ -62,6 +67,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: omero-web
+  annotations:
+    cloud.google.com/network-tier: Standard
+    networking.gke.io/load-balancer-type: "External"
 spec:
   type: LoadBalancer
   selector:

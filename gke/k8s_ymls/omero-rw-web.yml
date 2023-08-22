@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: omero-rw-web
+  name: omero-rw-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: omero-rw-web
+  template: # Pod template
+    metadata:
+      labels:
+        app: omero-rw-web
+    spec: # Pod specificiation
+      automountServiceAccountToken: false
+      securityContext:
+        # fsGroup forces volumes to be owned by gid=1000(omero-web)
+        # This is necessary for the static files to be copied over
+        # runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: omero-rw-web
+          image: us-east1-docker.pkg.dev/<GCP PROJECT NAME>/<ARTIFACT REGISTRY REPO>/omero-web:latest
+          imagePullPolicy: Always
+          env:
+            - name: CONFIG_omero_web_server__list
+              value: '[["omero-server", 4064, "omero"]]'
+            - name: CONFIG_omero_web_top__logo
+              value: '/static/webgateway/img/logo.png'
+          ports:
+            - containerPort: 4080
+              protocol: TCP
+          volumeMounts:
+            - name: omero-static-rw
+              mountPath: /opt/omero/web/OMERO.web/var
+      volumes:
+        - name: omero-static-rw
+          emptyDir: {}
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: omero-rw-web
+  annotations:
+    cloud.google.com/network-tier: Standard
+    networking.gke.io/load-balancer-type: "External"
+spec:
+  type: LoadBalancer
+  selector:
+    app: omero-rw-web
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    protocol: TCP
+  - name: https
+    port: 443
+    targetPort: 443
+    protocol: TCP
