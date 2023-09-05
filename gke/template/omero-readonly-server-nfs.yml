@@ -51,7 +51,7 @@ spec:
     spec:
       containers:
         - name: omero-readonly-server
-          image: us-east1-docker.pkg.dev/<GCP PROJECT NAME>/<ARTIFACT REGISTRY REPO>/omero-server:latest
+          image: <CONTAINER IMAGE>
           imagePullPolicy: Always
           env:
             - name: CONFIG_omero_db_name
@@ -80,10 +80,10 @@ spec:
           - containerPort: 4064
             protocol: TCP
           volumeMounts:
-          - name: files_mount
+          - name: files-mount
             mountPath: /OMERO
             readOnly: True
-          - name: data_mount
+          - name: data-mount
             mountPath: /data_mount
             readOnly: True
           securityContext:
@@ -92,11 +92,11 @@ spec:
               add:
                 - SYS_ADMIN
       volumes:
-        - name: files_mount
+        - name: files-mount
           nfs: 
             server: <FILESTORE IP>
-            path: /mountdir
-        - name: data_mount
+            path: <MOUNT PATH>
+        - name: data-mount
           nfs: 
             server: <FILESTORE IP>
-            path: /data_mountdir
+            path: <DATA MOUNT PATH>

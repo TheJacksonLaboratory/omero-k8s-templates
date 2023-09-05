@@ -2,17 +2,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: omero-rw-web
-  name: omero-rw-web
+    app: omero-web
+  name: omero-web
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: omero-rw-web
+      app: omero-web
   template: # Pod template
     metadata:
       labels:
-        app: omero-rw-web
+        app: omero-web
     spec: # Pod specificiation
       automountServiceAccountToken: false
       securityContext:
@@ -21,22 +21,44 @@ spec:
         # runAsGroup: 1000
         fsGroup: 1000
       containers:
-        - name: omero-rw-web
-          image: us-east1-docker.pkg.dev/<GCP PROJECT NAME>/<ARTIFACT REGISTRY REPO>/omero-web:latest
+        - name: omero-web
+          image: <CONTAINER IMAGE>
           imagePullPolicy: Always
           env:
             - name: CONFIG_omero_web_server__list
-              value: '[["omero-server", 4064, "omero"]]'
+              value: '[["omero-readonly-server", 4064, "omero"]]'
             - name: CONFIG_omero_web_top__logo
               value: '/static/webgateway/img/logo.png'
-          ports:
-            - containerPort: 4080
-              protocol: TCP
+          #ports:
+          #- containerPort: 4080
+          #  protocol: TCP
           volumeMounts:
-            - name: omero-static-rw
+            - name: omero-static
               mountPath: /opt/omero/web/OMERO.web/var
+        - name: nginx
+          image: nginx:1.21.4
+          volumeMounts:
+            - mountPath: "/etc/nginx/ssl"
+              name: nginx-ssl
+              readOnly: true
+            - mountPath: /etc/nginx/conf.d
+              name: nginx-configmap
+              readOnly: true
+            - name: omero-static
+              mountPath: /opt/omero-static
+              subPath: static
+              readOnly: true
+          ports:
+            - containerPort: 80
+            - containerPort: 443
       volumes:
-        - name: omero-static-rw
+        - name: nginx-ssl
+          secret:
+            secretName: nginx-ssl
+        - name: nginx-configmap
+          configMap:
+            name: nginxconfigmap
+        - name: omero-static
           emptyDir: {}
 
 
@@ -44,14 +66,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: omero-rw-web
+  name: omero-web
   annotations:
     cloud.google.com/network-tier: Standard
     networking.gke.io/load-balancer-type: "External"
 spec:
   type: LoadBalancer
   selector:
-    app: omero-rw-web
+    app: omero-web
   ports:
   - name: http
     port: 80

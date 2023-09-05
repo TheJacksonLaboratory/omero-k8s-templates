@@ -42,7 +42,7 @@ metadata:
 spec:
   containers:
     - name: omero-server
-      image: us-east1-docker.pkg.dev/<GCP PROJECT NAME>/<ARTIFACT REGISTRY REPO>/omero-server:latest
+      image: <CONTAINER IMAGE>
       imagePullPolicy: Always
       resources:
         limits:
@@ -76,9 +76,9 @@ spec:
       - containerPort: 4064
         protocol: TCP
       volumeMounts:
-      - name: files_mount
+      - name: files-mount
         mountPath: /OMERO
-      - name: data_mount
+      - name: data-mount
         mountPath: /data_mount
       securityContext:
         privileged: true
@@ -89,9 +89,9 @@ spec:
     - name: files_mount
       nfs: 
         server: <FILESTORE IP>
-        path: /mountdir
+        path: <MOUNT PATH>
     - name: data_mount
       nfs: 
         server: <FILESTORE IP>
-        path: /data_mountdir
+        path: <DATA MOUNT PATH>
         

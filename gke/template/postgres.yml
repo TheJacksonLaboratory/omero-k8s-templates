@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: database
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: database
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: database
+  labels:
+    app: database
+spec:
+  containers:
+    - name: database
+      image: postgres:11
+      imagePullPolicy: Always
+      env:
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_DB
+          value: omero_database
+        - name: POSTGRES_PASSWORD
+          value: omero
+      ports:
+      - containerPort: 5432
+        protocol: TCP
+      lifecycle:
+        postStart:
+          exec:
+            command: ["/bin/bash","-c","sleep 20 && PGPASSWORD=$POSTGRES_PASSWORD psql $POSTGRES_DB -U $POSTGRES_USER -c \"CREATE USER omero_readonly;
+                      GRANT CONNECT ON DATABASE omero_database TO omero_readonly;
+                      GRANT SELECT ON ALL TABLES IN SCHEMA public TO omero_readonly;
+                      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO omero_readonly;
+                      ALTER USER omero_readonly WITH PASSWORD \'omero_readonly\';\""]

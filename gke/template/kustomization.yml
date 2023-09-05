@@ -1,0 +1,5 @@
+resources:
+- omero-server.yml
+- omero-readonly-server.yml
+- omero-web.yml
+- nginx_conf.yml

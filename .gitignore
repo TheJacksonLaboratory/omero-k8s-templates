@@ -5,3 +5,4 @@
 *.key
 *.crt
 .DS_Store
+*nogit*
