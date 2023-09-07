@@ -80,17 +80,12 @@ spec:
         mountPath: /OMERO
       - name: data-mount
         mountPath: /data_mount
-      securityContext:
-        privileged: true
-        capabilities:
-          add:
-            - SYS_ADMIN
   volumes:
-    - name: files_mount
+    - name: files-mount
       nfs: 
         server: <FILESTORE IP>
         path: <MOUNT PATH>
-    - name: data_mount
+    - name: data-mount
       nfs: 
         server: <FILESTORE IP>
         path: <DATA MOUNT PATH>

@@ -86,11 +86,6 @@ spec:
           - name: data-mount
             mountPath: /data_mount
             readOnly: True
-          securityContext:
-            privileged: true
-            capabilities:
-              add:
-                - SYS_ADMIN
       volumes:
         - name: files-mount
           nfs: 

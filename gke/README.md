@@ -39,12 +39,12 @@ sudo apt-get install postgresql-client-13
 
 Create users and database (Here OMERO.server user is omero_rw and readonly OMERO.server user is omero_ro, feel free to change. Definitely change password of omero_ro.)
 ```
-createuser -h 34.66.67.141 -U postgres -P -D -R -S omero_rw
-psql -h 34.66.67.141 -U postgres
+createuser -h <DATABASE IP> -U postgres -P -D -R -S omero_rw
+psql -h <DATABASE IP> -U postgres
 GRANT omero_rw to postgres;
 exit
-createdb -h 34.66.67.141 -U postgres -E UTF8 -O omero_rw omero_database
-psql -h 34.66.67.141 -U postgres
+createdb -h <DATABASE IP> -U postgres -E UTF8 -O omero_rw omero_database
+psql -h <DATABASE IP> -U postgres
 CREATE USER omero_ro;
 \c omero_database omero_rw
 GRANT CONNECT ON DATABASE omero_database TO omero_ro;
