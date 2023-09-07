@@ -4,4 +4,4 @@ resources:
 namespace: example-omero # first kubectl create namespace test-omero
 
 patchesStrategicMerge:
-- dev_changes_secret.yml
+- nfs_changes.yml

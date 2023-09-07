@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: omero-server
+spec:
+  containers:
+    - name: omero-server
+      image: us-east1-docker.pkg.dev/<PROJECT NAME>/omero-repo/omero-server:latest
+      env:
+        - name: CONFIG_omero_db_name
+          value: omero_database
+        - name: CONFIG_omero_db_host
+          value: <DATABASE IP>
+      volumeMounts:
+        - name: files-mount
+          mountPath: /OMERO
+        - $patch: delete
+          name: data-mount
+      lifecycle:
+        postStart:
+          exec:
+            command: ["gcsfuse", "omero-bucket", "/data_mount"]
+      securityContext:
+        privileged: true
+        capabilities:
+          add:
+            - SYS_ADMIN
+  volumes:
+    - name: files-mount
+      nfs: 
+        server: <FILESTORE IP>
+        path: /mountdir
+    - $patch: delete
+      name: data-mount
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: omero-readonly-server
+spec:
+  template:
+    spec:
+      containers:
+        - name: omero-readonly-server
+          image: us-east1-docker.pkg.dev/<PROJECT NAME>/omero-repo/omero-server:latest
+          env:
+            - name: CONFIG_omero_db_name
+              value: omero_database
+            - name: CONFIG_omero_db_host
+              value: <DATABASE IP>
+          volumeMounts:
+            - name: files-mount
+              mountPath: /OMERO
+            - $patch: delete
+              name: data-mount
+          lifecycle:
+            postStart:
+              exec:
+                command: ["gcsfuse","-o","ro","omero-bucket", "/data_mount"]
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - SYS_ADMIN
+      volumes:
+        - name: files-mount
+          nfs: 
+            server: <FILESTORE IP>
+            path: /mountdir
+        - $patch: delete
+          name: data-mount
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: omero-web
+spec:
+  template:
+    spec:
+      containers:
+        - name: omero-web
+          image: us-east1-docker.pkg.dev/<PROJECT NAME>/omero-repo/omero-web:latest
+
