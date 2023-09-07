@@ -1,7 +1,5 @@
 resources:
-- ../template
-- omero-server.yml
-- omero-readonly-server.yml
+- ../nfs_base
 
 namespace: example-omero # first kubectl create namespace test-omero
 
