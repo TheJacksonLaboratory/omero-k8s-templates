@@ -83,9 +83,18 @@ OMERO.server (omero-server.yml, omero-readonly-server.yml, omero-server-nfs.yml,
     - Only for object-storage OMERO.server yamls
     - Name of Google Storage bucket
 
+OMERO.server container image
+- data_mount
+	- the Dockerfile in `omero-k8s-templates/gke/containers/omero-server` sets permissions such that Filestore or gcsfuse can mount to `/data_mount`
+	- the lines ```RUN mkdir -p /data_mount; RUN chown -R omero-server /data_mount``` can be changed to a different mount path if desired (the mount path in the OMERO.server ymls would have to be changed accordingly)
+
 OMERO.web
 - CONTAINER IMAGE
     - Likely the URL to the Google artifact registry repository where you pushed the container image
+
+OMERO.web container image
+- logo.png
+	- this OMERO.web setup (container image and deployment .yml) currently switch out the OMERO logo in the top left of the webpage with the logo saved at logo.png in `omero-k8s-templates/gke/containers/omero-web`
 
 # Secrets
 All secrets are base64. `echo -n key | base64`
