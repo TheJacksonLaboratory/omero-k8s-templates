@@ -6,7 +6,7 @@ kubectl create namespace example-omero
 # Run OMERO via kustomize
 ```
 cd omero-k8s-templates/gke/
-kubectl apply -k gcs_run
+kubectl apply -k nfs_run
 ```
 
 # Delete everything in namespace (to restart)

@@ -1,4 +1,5 @@
 # Google Cloud Project (GCP) Setup
+
 ## VPC
 ## Google Kubernetes Engine (GKE)
 CLI command 
@@ -94,3 +95,18 @@ All secrets are base64. `echo -n key | base64`
     - database user and password
 - omero-readonly-secrets.yml
     - read-only database user and password
+
+# kustomize
+- `nfs_base`: base folder of templates
+	- This runs if you replace every <ALL CAPS> parameter in the ymls, as described above
+	- OMERO.server read-write, OMERO.server read-only, OMERO.web connected to read-only OMERO.server
+	- Both OMERO files and image data files are hosted on Filestore (NFS)
+- `nfs_run`: use kustomize to enter all parameters for `nfs_base`
+	- Currently runs exactly the same pods as `nfs_base`
+	- This is just another way for you to enter all the abstracted <ALL CAPS> parameters from `nfs_base` in one file (`nfs_changes.yml`)
+	- As an example, where possible, most of the abstracted parameters have been filled in
+- `gcs_run`: use kustomize to change OMERO.server pods to mount object storage (GCS)
+	- OMERO files are hosted on Filestore still, image data files can be hosted on object storage (GCS)
+	- requires running on a standard GKE cluster
+	- Enter all abstracted <ALL CAPS> parameters from `nfs_base` in `gcs_changes.yml`
+	- As an example, where possible, most of the abstracted parameters have been filled in
