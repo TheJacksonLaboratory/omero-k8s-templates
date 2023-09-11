@@ -36,3 +36,11 @@ spec:
       ports:
       - containerPort: 5432
         protocol: TCP
+      lifecycle:
+        postStart:
+          exec:
+            command: ["/bin/bash","-c","sleep 20 && PGPASSWORD=$POSTGRES_PASSWORD psql $POSTGRES_DB -U $POSTGRES_USER -c \"CREATE USER omero_readonly;
+                      GRANT CONNECT ON DATABASE omero_database TO omero_readonly;
+                      GRANT SELECT ON ALL TABLES IN SCHEMA public TO omero_readonly;
+                      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO omero_readonly;
+                      ALTER USER omero_readonly WITH PASSWORD \'omero_readonly\';\""]
