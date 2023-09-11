@@ -64,8 +64,8 @@ RUN chown -R omero-server OMERO.server-*
 RUN ln -s OMERO.server-*/ OMERO.server
 RUN chown -R omero-server /opt
 
-RUN mkdir -p /OMERO/certs 
-RUN chown -R omero-server /OMERO
+# RUN mkdir -p /OMERO/certs 
+#RUN chown -R omero-server /OMERO
 
 # Startup scripts, from omero-server-docker
 ADD entrypoint.sh /usr/local/bin/
