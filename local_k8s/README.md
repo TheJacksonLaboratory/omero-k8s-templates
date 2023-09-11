@@ -8,7 +8,7 @@ cd ../k8s_ymls
 # NFS setup? docker container (because kub not privileged)
 kubectl apply -f omero-secrets.yml
 kubectl apply -f postgres.yml
-kubectl apply -f omero-server.yml
+kubectl apply -f omero-server.yml # failing currently on nfs mount
 kubectl apply -f nginx_conf_http.yml
 kubectl apply -f nginx.sslsecret.yml
 kubectl apply -f omero-rw-web.yml
