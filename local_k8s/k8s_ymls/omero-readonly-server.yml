@@ -80,8 +80,8 @@ spec:
           - name: omero-data
             mountPath: /OMERO
             readOnly: true
-  volumes:
-    - name: omero-data
-      persistentVolumeClaim:
-        claimName: pvc-name
-        readOnly: false
+      volumes:
+        - name: omero-data
+          persistentVolumeClaim:
+            claimName: pvc-name
+            readOnly: false
