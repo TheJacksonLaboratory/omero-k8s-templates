@@ -1,4 +1,4 @@
-# Based on https://raw.githubusercontent.com/GoogleCloudPlatform/gke-rbac-demo/master/terraform/modules/instance/manifests/hello-server.yaml
+#Based on https://raw.githubusercontent.com/GoogleCloudPlatform/gke-rbac-demo/master/terraform/modules/instance/manifests/hello-server.yaml
 
 kind: Service
 apiVersion: v1
@@ -66,11 +66,6 @@ spec:
       volumeMounts:
         - name: omero-data
           mountPath: /OMERO
-  # volumes:
-  #   - name: omero-data
-  #     nfs: 
-  #       server: 0.0.0.0 # IP address of your NFS service
-  #       path: "/nfsshare"
   volumes:
     - name: omero-data
       persistentVolumeClaim:
