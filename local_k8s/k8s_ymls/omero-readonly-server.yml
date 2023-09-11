@@ -84,4 +84,4 @@ spec:
         - name: omero-data
           persistentVolumeClaim:
             claimName: pvc-name
-            readOnly: false
+            readOnly: true
