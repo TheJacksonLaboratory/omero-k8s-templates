@@ -57,7 +57,7 @@ spec:
               name: omero-secrets
               key: CONFIG_omero_db_pass
         - name: ROOTPASS
-          value: omero
+          value: omero # change password of OMERO admin user "root"
       ports:
       - containerPort: 4063
         protocol: TCP

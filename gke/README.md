@@ -82,6 +82,8 @@ OMERO.server (omero-server.yml, omero-readonly-server.yml, omero-server-nfs.yml,
 - GCS BUCKET NAME
     - Only for object-storage OMERO.server yamls
     - Name of Google Storage bucket
+- POOL NAME
+	- Name of GKE pool to assign pod to
 
 OMERO.server container image
 - data_mount

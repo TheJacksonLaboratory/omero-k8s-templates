@@ -49,15 +49,29 @@ spec:
       labels:
         app: omero-readonly-server
     spec:
+      automountServiceAccountToken: false
+      nodeSelector:
+        cloud.google.com/gke-nodepool: <POOL NAME>
       containers:
         - name: omero-readonly-server
           image: <CONTAINER IMAGE>
           imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "7Gi"
+              ephemeral-storage: "4Gi"
+              cpu: "7000m"
+            requests:
+              memory: "7Gi"
+              ephemeral-storage: "4Gi"
+              cpu: "7000m"
           env:
             - name: CONFIG_omero_db_name
               value: <DB NAME>
             - name: CONFIG_omero_db_host
               value: <CLOUD SQL IP>
+            - name: CONFIG_omero_data_dir
+              value: /OMERO # this is the default
             - name: CONFIG_omero_db_user
               valueFrom:
                 secretKeyRef:
@@ -68,12 +82,20 @@ spec:
                 secretKeyRef:
                   name: omero-readonly-secrets
                   key: CONFIG_omero_db_pass
-            - name: ROOTPASS
-              value: omero
+            - name: CONFIG_omero_jvmcfg_percent_blitz
+              value: '20'
+            - name: CONFIG_omero_jvmcfg_percent_pixeldata
+              value: '20'
+            - name: CONFIG_omero_jvmcfg_system__memory
+              value: '8000'
+            - name: CONFIG_omero_db_poolsize
+              value: '75'
             - name: CONFIG_omero_cluster_read__only_db 
               value: 'true'
             - name: CONFIG_omero_cluster_read__only_repo
               value: 'true'
+            - name: CONFIG_omero_pixeldata_memoizer_dir_local
+              value: /tmp/BioFormatsCache
           ports:
           - containerPort: 4063
             protocol: TCP
@@ -82,10 +104,10 @@ spec:
           volumeMounts:
           - name: files-mount
             mountPath: /OMERO
-            readOnly: True
+            readOnly: true
           - name: data-mount
             mountPath: /data_mount
-            readOnly: True
+            readOnly: true
       volumes:
         - name: files-mount
           nfs: 

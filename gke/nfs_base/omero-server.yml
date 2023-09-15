@@ -40,26 +40,30 @@ metadata:
   labels:
     app: omero-server
 spec:
+  nodeSelector:
+    cloud.google.com/gke-nodepool: <POOL NAME>
   containers:
     - name: omero-server
       image: <CONTAINER IMAGE>
       imagePullPolicy: Always
       resources:
         limits:
-          memory: "3Gi"
-          ephemeral-storage: "2Gi"
+          memory: "7Gi"
+          ephemeral-storage: "4Gi"
           # CPU: In units of millicores
-          cpu: "1500m"
+          cpu: "7000m"
         requests:
-          memory: "3Gi"
-          ephemeral-storage: "2Gi"
+          memory: "7Gi"
+          ephemeral-storage: "4Gi"
           # CPU: In units of millicores
-          cpu: "1500m"
+          cpu: "7000m"
       env:
         - name: CONFIG_omero_db_name
           value: <DB NAME>
         - name: CONFIG_omero_db_host
           value: <CLOUD SQL IP>
+        - name: CONFIG_omero_data_dir
+          value: /OMERO # this is the default
         - name: CONFIG_omero_db_user
           valueFrom:
             secretKeyRef:
@@ -70,6 +74,14 @@ spec:
             secretKeyRef:
               name: omero-secrets
               key: CONFIG_omero_db_pass
+        - name: CONFIG_omero_jvmcfg_percent_blitz
+          value: '20'
+        - name: CONFIG_omero_jvmcfg_percent_pixeldata
+          value: '20'
+        - name: CONFIG_omero_jvmcfg_system__memory
+          value: '8000'
+        - name: CONFIG_omero_db_poolsize
+          value: '75'
       ports:
       - containerPort: 4063
         protocol: TCP

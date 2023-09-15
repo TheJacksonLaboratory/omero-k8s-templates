@@ -4,12 +4,12 @@ metadata:
   name: pv-name
 spec:
   capacity:
-    storage: 1Gi
+    storage: 1Gi # this is very small for OMERO
   volumeMode: Filesystem
   accessModes:
     - ReadWriteMany
   nfs:
-    server: 0.0.0.0 # IP address of your NFS service
+    server: 0.0.0.0
     path: "/nfsshare"
 
 ---
@@ -22,4 +22,4 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 1Gi
+      storage: 1Gi # this is very small for OMERO

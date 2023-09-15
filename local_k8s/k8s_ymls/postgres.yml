@@ -43,4 +43,4 @@ spec:
                       GRANT CONNECT ON DATABASE omero TO omero_readonly;
                       GRANT SELECT ON ALL TABLES IN SCHEMA public TO omero_readonly;
                       ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO omero_readonly;
-                      ALTER USER omero_readonly WITH PASSWORD \'omero_readonly\';\""]
+                      ALTER USER omero_readonly WITH PASSWORD \'omero_readonly\';\""] # change readonly password
