@@ -9,6 +9,10 @@ on:
   schedule:
     - cron: '0 0 * * 0'
 
+jobs:
+  test:
+    name: Start up local kubernetes pods
+    runs-on: ubuntu-latest
     steps:
       - name: start minikube
         id: minikube
