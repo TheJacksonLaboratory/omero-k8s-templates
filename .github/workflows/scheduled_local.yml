@@ -33,12 +33,12 @@ jobs:
           docker images
       - name: startup pods
         run: kubectl apply -k local_k8s/k8s_ymls
-      - name: sleep for 1 min
-        run: sleep 60s
+      - name: sleep for 2 min
+        run: sleep 120s
       - name: print pods
         run: kubectl get pods -A
       - name: port-forward
-        run: kubectl port-forward svc/nginx-service 8080:80 --address='0.0.0.0' &
+        run: kubectl port-forward svc/omero-web 8080:80 --address='0.0.0.0' &
       - name: test web
         run: curl https://localhost:8080
 
