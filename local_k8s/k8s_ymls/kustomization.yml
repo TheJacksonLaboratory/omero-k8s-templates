@@ -1,0 +1,10 @@
+resources:
+- nfs_pv.yml
+- omero-secrets.yml
+- postgres.yml
+- omero-server.yml
+- omero-readonly-secrets.yml
+- omero-readonly-server.yml
+- nginx.sslsecret.yml
+- nginx_conf_https.yml
+- omero-web.yml

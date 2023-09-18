@@ -1,0 +1,30 @@
+# This workflow will test that the local k8s setup does not error
+# This is useful to keep an eye on version incompatibilities
+
+name: Local test
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  schedule:
+    - cron: '0 0 * * 0'
+
+    steps:
+      - name: start minikube
+        id: minikube
+        uses: medyagh/setup-minikube@latest
+        with:
+          cache: false
+      - name: test cluster
+        run: kubectl get pods -A
+      - name: build image
+        run: |
+          export SHELL=/bin/bash
+          eval $(minikube -p minikube docker-env)
+          docker build containers/omero-server -t omero-server
+          docker build containers/omero-web -t omero-web
+          echo -n "verifying images:"
+          docker images
+      - name: startup pods
+        run: |
+          kubectl apply -k local_k8s/k8s_ymls
