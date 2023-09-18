@@ -14,6 +14,8 @@ jobs:
     name: Start up local kubernetes pods
     runs-on: ubuntu-latest
     steps:
+      - name: checkout
+        uses: actions/checkout@v2
       - name: start minikube
         id: minikube
         uses: medyagh/setup-minikube@latest
