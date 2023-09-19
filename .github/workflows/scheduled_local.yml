@@ -38,7 +38,7 @@ jobs:
       - name: print pods
         run: kubectl get pods -A
       - name: port-forward
-        run: kubectl port-forward svc/omero-web 8080:80 --address='0.0.0.0' &
+        run: kubectl port-forward svc/omero-web 8080:4080 --address='0.0.0.0' &
       - name: test web
         run: curl https://localhost:8080
 
