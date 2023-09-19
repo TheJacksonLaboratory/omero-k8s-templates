@@ -10,6 +10,11 @@ data:
     server {
         listen 80 default_server;
         server_name localhost;
+
+        location = /healthz {
+            #access_log off;
+            return 200;
+        }
         
         location / {
             proxy_pass http://backend;
