@@ -1,0 +1,7 @@
+resources:
+- ../k8s_ymls
+- omero-secrets-example.yml
+- omero-readonly-secrets-example.yml
+
+patchesStrategicMerge:
+- testing_changes.yml

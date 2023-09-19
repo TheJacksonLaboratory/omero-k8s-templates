@@ -1,9 +1,7 @@
 resources:
 - nfs_pv.yml
-- omero-secrets-example.yml
 - postgres.yml
 - omero-server.yml
-- omero-readonly-secrets-example.yml
 - omero-readonly-server.yml
 - nginx_conf_http.yml
 - omero-web.yml

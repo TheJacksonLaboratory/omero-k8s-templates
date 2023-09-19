@@ -21,8 +21,6 @@ jobs:
         uses: medyagh/setup-minikube@latest
         with:
           cache: false
-          cpus: 4
-          memory: 4000m 
       - name: test cluster
         run: kubectl get pods -A
       - name: build image
@@ -34,7 +32,7 @@ jobs:
           echo -n "verifying images:"
           docker images
       - name: startup pods
-        run: kubectl apply -k local_k8s/k8s_ymls
+        run: kubectl apply -k local_k8s/test
       - name: sleep for 2 min
         run: sleep 120s
       - name: print pods
