@@ -21,6 +21,8 @@ jobs:
         uses: medyagh/setup-minikube@latest
         with:
           cache: false
+          cpus: 2
+          memory: 2000m 
       - name: test cluster
         run: kubectl get pods -A
       - name: build image
