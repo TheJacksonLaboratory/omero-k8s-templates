@@ -39,11 +39,10 @@ jobs:
         run: kubectl get pods -A
       - name: test servers
         run: |
-        kubectl exec omero-server -- bash -c "/opt/omero/server/server_venv/bin/omero login -u root -w omero -s localhost:4064"
-        POD=$(kubectl get pod -l app=omero-readonly-server -o jsonpath="{.items[0].metadata.name}"
-        kubectl exec $POD -- bash -c "/opt/omero/server/server_venv/bin/omero login -u root -w omero -s localhost:4064"
+          kubectl exec omero-server -- bash -c "/opt/omero/server/server_venv/bin/omero login -u root -w omero -s localhost:4064"
+          POD=$(kubectl get pod -l app=omero-readonly-server -o jsonpath="{.items[0].metadata.name}"
+          kubectl exec $POD -- bash -c "/opt/omero/server/server_venv/bin/omero login -u root -w omero -s localhost:4064"
       - name: test web
         run: |
-        kubectl port-forward svc/omero-web 8080:4080 --address='0.0.0.0' &
-        curl -I localhost:8080
-
+          kubectl port-forward svc/omero-web 8080:4080 --address='0.0.0.0' &
+          curl -I localhost:8080
