@@ -33,10 +33,12 @@ jobs:
           docker images
       - name: startup pods
         run: kubectl apply -k local_k8s/test
-      - name: sleep for 2 min
-        run: sleep 120s
+      - name: sleep for 3 min
+        run: sleep 180s
       - name: print pods
         run: kubectl get pods -A
+      - name: server logs
+        run: kubectl logs omero-server
       - name: test servers
         run: |
           kubectl exec omero-server -- bash -c "/opt/omero/server/server_venv/bin/omero login -u root -w omero -s 127.0.0.1:4064"
