@@ -33,8 +33,8 @@ jobs:
           docker images
       - name: startup pods
         run: kubectl apply -k local_k8s/test
-      - name: sleep for 3 min
-        run: sleep 180s
+      - name: sleep for 2 min
+        run: sleep 120s
       - name: print pods
         run: kubectl get pods -A
       - name: server logs
@@ -42,7 +42,7 @@ jobs:
       - name: test servers
         run: |
           kubectl exec omero-server -- bash -c "/opt/omero/server/server_venv/bin/omero login -u root -w omero -s 127.0.0.1:4064"
-          POD=$(kubectl get pod -l app=omero-readonly-server -o jsonpath="{.items[0].metadata.name}"
+          POD=$(kubectl get pod -l app=omero-readonly-server -o jsonpath="{.items[0].metadata.name}")
           kubectl exec $POD -- bash -c "/opt/omero/server/server_venv/bin/omero login -u root -w omero -s 127.0.0.1:4064"
       - name: test web
         run: |
