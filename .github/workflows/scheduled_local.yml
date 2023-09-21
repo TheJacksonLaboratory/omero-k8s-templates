@@ -50,4 +50,5 @@ jobs:
       - name: test web
         run: |
           kubectl port-forward svc/omero-web 8080:4080 --address='0.0.0.0' &
+          sleep 30s
           curl -I localhost:8080
