@@ -3,6 +3,8 @@ kind: Pod
 metadata:
   name: omero-server
 spec:
+  nodeSelector:
+    cloud.google.com/gke-nodepool: default-pool
   containers:
     - name: omero-server
       image: us-east1-docker.pkg.dev/<PROJECT NAME>/omero-repo/omero-server:latest
@@ -42,6 +44,8 @@ metadata:
 spec:
   template:
     spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: default-pool
       containers:
         - name: omero-readonly-server
           image: us-east1-docker.pkg.dev/<PROJECT NAME>/omero-repo/omero-server:latest
@@ -81,6 +85,8 @@ metadata:
 spec:
   template:
     spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: default-pool
       containers:
         - name: omero-web
           image: us-east1-docker.pkg.dev/<PROJECT NAME>/omero-repo/omero-web:latest

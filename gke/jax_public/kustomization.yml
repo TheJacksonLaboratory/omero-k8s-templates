@@ -1,7 +1,8 @@
 resources:
-- ../nfs_base
+- ../gcs_run
+- omero-web-secrets.yml
 
 namespace: example-omero # first `kubectl create namespace example-omero`
 
 patchesStrategicMerge:
-- gcs_changes.yml
+- jax_changes.yml

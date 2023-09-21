@@ -20,6 +20,8 @@ spec:
         # This is necessary for the static files to be copied over
         # runAsGroup: 1000
         fsGroup: 1000
+      nodeSelector:
+        cloud.google.com/gke-nodepool: <POOL NAME>
       containers:
         - name: omero-web
           image: <CONTAINER IMAGE>
@@ -27,11 +29,6 @@ spec:
           env:
             - name: CONFIG_omero_web_server__list
               value: '[["omero-readonly-server", 4064, "omero"]]'
-            - name: CONFIG_omero_web_top__logo
-              value: '/static/webgateway/img/logo.png'
-          #ports:
-          #- containerPort: 4080
-          #  protocol: TCP
           volumeMounts:
             - name: omero-static
               mountPath: /opt/omero/web/OMERO.web/var

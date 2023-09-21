@@ -46,17 +46,6 @@ spec:
     - name: omero-server
       image: <CONTAINER IMAGE>
       imagePullPolicy: Always
-      resources:
-        limits:
-          memory: "7Gi"
-          ephemeral-storage: "4Gi"
-          # CPU: In units of millicores
-          cpu: "7000m"
-        requests:
-          memory: "7Gi"
-          ephemeral-storage: "4Gi"
-          # CPU: In units of millicores
-          cpu: "7000m"
       env:
         - name: CONFIG_omero_db_name
           value: <DB NAME>
@@ -74,14 +63,6 @@ spec:
             secretKeyRef:
               name: omero-secrets
               key: CONFIG_omero_db_pass
-        - name: CONFIG_omero_jvmcfg_percent_blitz
-          value: '20'
-        - name: CONFIG_omero_jvmcfg_percent_pixeldata
-          value: '20'
-        - name: CONFIG_omero_jvmcfg_system__memory
-          value: '8000'
-        - name: CONFIG_omero_db_poolsize
-          value: '75'
       ports:
       - containerPort: 4063
         protocol: TCP

@@ -1,7 +1,7 @@
 resources:
 - ../nfs_base
 
-namespace: example-omero # first kubectl create namespace test-omero
+namespace: example-omero # first `kubectl create namespace example-omero`
 
 patchesStrategicMerge:
 - nfs_changes.yml
