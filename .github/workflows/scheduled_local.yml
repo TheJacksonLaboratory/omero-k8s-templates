@@ -33,8 +33,8 @@ jobs:
           docker images
       - name: startup pods
         run: kubectl apply -k local_k8s/test
-      - name: sleep for 5 min
-        run: sleep 300s
+      - name: sleep for 10 min
+        run: sleep 600s
       - name: print pods
         run: kubectl get pods -A
       - name: server logs
