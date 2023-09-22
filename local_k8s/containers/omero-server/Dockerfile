@@ -48,7 +48,7 @@ RUN /opt/omero/server/server_venv/bin/pip install https://github.com/ome/zeroc-i
 RUN /opt/omero/server/server_venv/bin/pip install omero-server[default]
 RUN /opt/omero/server/server_venv/bin/pip install "omero-py>=5.8.0"
 RUN /opt/omero/server/server_venv/bin/pip install omego
-RUN /opt/omero/server/server_venv/bin/pip install omero-certificates==0.3.0
+RUN /opt/omero/server/server_venv/bin/pip install omero-certificates==0.2.0
 RUN /opt/omero/server/server_venv/bin/pip install omero-cli-transfer>=0.2.0
 
 
