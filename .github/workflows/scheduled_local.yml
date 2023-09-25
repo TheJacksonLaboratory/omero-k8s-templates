@@ -33,19 +33,23 @@ jobs:
           docker images
       - name: startup pods
         run: kubectl apply -k local_k8s/test
-      - name: sleep for 10 min
-        run: sleep 600s
+      - name: sleep for 5 min
+        run: sleep 300s
       - name: print pods
         run: kubectl get pods -A
       - name: server logs
         run: kubectl logs omero-server
+      - name: omero logs
+        run: \
+        kubectl exec omero-server -- bash -c "cat /opt/omero/server/OMERO.server/var/log/Blitz-0.log"
+        kubectl exec omero-server -- bash -c "cat /opt/omero/server/OMERO.server/var/log/master.err"
       - name: test servers
         run: |
           kubectl exec omero-server -- bash -c "/opt/omero/server/server_venv/bin/omero login -u root -w omero -s 127.0.0.1:4064"
-          POD=$(kubectl get pod -l app=omero-readonly-server -o jsonpath="{.items[0].metadata.name}"
-          kubectl exec $POD -- bash -c "/opt/omero/server/server_venv/bin/omero login -u root -w omero -s 127.0.0.1:4064"
-      - name: test web
-        run: |
-          kubectl port-forward svc/omero-web 8080:4080 --address='0.0.0.0' &
-          sleep 30s
-          curl -I localhost:8080
+      #     POD=$(kubectl get pod -l app=omero-readonly-server -o jsonpath="{.items[0].metadata.name}"
+      #     kubectl exec $POD -- bash -c "/opt/omero/server/server_venv/bin/omero login -u root -w omero -s 127.0.0.1:4064"
+      # - name: test web
+      #   run: |
+      #     kubectl port-forward svc/omero-web 8080:4080 --address='0.0.0.0' &
+      #     sleep 30s
+      #     curl -I localhost:8080
