@@ -3,5 +3,5 @@ resources:
 - omero-secrets-example.yml
 - omero-readonly-secrets-example.yml
 
-# patchesStrategicMerge:
-# - testing_changes.yml
+patchesStrategicMerge:
+- testing_changes.yml

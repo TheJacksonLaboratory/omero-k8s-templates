@@ -7,6 +7,9 @@ spec:
     spec:
       containers:
         - name: omero-web
+          env:
+            - name: CONFIG_omero_web_server__list
+              value: '[["omero-server", 4064, "omero"]]'
           ports:
             - containerPort: 4080
         - $patch: delete
