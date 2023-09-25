@@ -33,3 +33,11 @@ spec:
      port: 4080
      targetPort: 4080
      protocol: TCP
+
+---
+
+$patch: delete
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: omero-readonly-server
