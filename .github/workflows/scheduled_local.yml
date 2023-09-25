@@ -41,8 +41,8 @@ jobs:
         run: kubectl logs omero-server
       - name: omero logs
         run: |
-          kubectl exec omero-server -- bash -c "cat /opt/omero/server/OMERO.server/var/log/Blitz-0.log" | grep ERROR
-          kubectl exec omero-server -- bash -c "cat /opt/omero/server/OMERO.server/var/log/master.err" | grep ERROR
+          echo $(kubectl exec omero-server -- bash -c "cat /opt/omero/server/OMERO.server/var/log/Blitz-0.log" | grep ERROR)
+          echo $(kubectl exec omero-server -- bash -c "cat /opt/omero/server/OMERO.server/var/log/master.err" | grep ERROR)
       - name: test servers
         run: |
           kubectl exec omero-server -- bash -c "/opt/omero/server/server_venv/bin/omero login -u root -w omero -s 127.0.0.1:4064"
