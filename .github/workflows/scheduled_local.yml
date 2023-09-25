@@ -40,7 +40,7 @@ jobs:
       - name: server logs
         run: kubectl logs omero-server
       - name: omero logs
-        run: \
+        run: |
         kubectl exec omero-server -- bash -c "cat /opt/omero/server/OMERO.server/var/log/Blitz-0.log"
         kubectl exec omero-server -- bash -c "cat /opt/omero/server/OMERO.server/var/log/master.err"
       - name: test servers
