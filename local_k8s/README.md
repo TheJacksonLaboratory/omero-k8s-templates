@@ -21,6 +21,7 @@ docker build omero-server -t omero-server
 ```
 cd omero-k8s-templates/local_k8s/k8s_ymls
 kubectl apply -f omero-secrets.yml
+kubectl apply -f nfs_pv.yml
 kubectl apply -f postgres.yml
 kubectl apply -f omero-server.yml
 kubectl apply -f omero-readonly-secrets.yml
