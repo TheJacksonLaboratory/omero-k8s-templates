@@ -2,17 +2,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: omero-web
-  name: omero-web
+    app: omero-web-direct
+  name: omero-web-direct
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: omero-web
+      app: omero-web-direct
   template: # Pod template
     metadata:
       labels:
-        app: omero-web
+        app: omero-web-direct
     spec: # Pod specificiation
       automountServiceAccountToken: false
       securityContext:
@@ -21,8 +21,8 @@ spec:
         # runAsGroup: 1000
         fsGroup: 1000
       containers:
-        - name: omero-web
-          image: omero-web
+        - name: omero-web-direct
+          image: omero-web-direct
           imagePullPolicy: Never
           env:
             - name: CONFIG_omero_web_server__list
@@ -36,11 +36,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: omero-web
+  name: omero-web-direct
 spec:
   type: LoadBalancer
   selector:
-    app: omero-web
+    app: omero-web-direct
   ports:
   - name: web
     port: 4080
