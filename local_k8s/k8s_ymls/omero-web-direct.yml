@@ -22,7 +22,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: omero-web-direct
-          image: omero-web-direct
+          image: omero-web
           imagePullPolicy: Never
           env:
             - name: CONFIG_omero_web_server__list
