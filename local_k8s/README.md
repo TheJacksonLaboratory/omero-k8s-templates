@@ -32,8 +32,10 @@ kubectl apply -f omero-web.yml
 ```
 
 ## Forward a local port to an internal pod port, to access OMERO.web
+
 ```
+kubectl apply -f omero-web-direct.yml
 screen -S port-forward
-kubectl port-forward svc/omero-web 6080:4080 --address==0.0.0.0
+kubectl port-forward svc/omero-web 6080:4080 --address=0.0.0.0
 ```
 Then access OMERO.web at `localhost:6080`

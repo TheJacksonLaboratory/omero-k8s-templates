@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: omero-web
+  name: omero-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: omero-web
+  template: # Pod template
+    metadata:
+      labels:
+        app: omero-web
+    spec: # Pod specificiation
+      automountServiceAccountToken: false
+      securityContext:
+        # fsGroup forces volumes to be owned by gid=1000(omero-web)
+        # This is necessary for the static files to be copied over
+        # runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: omero-web
+          image: omero-web
+          imagePullPolicy: Never
+          env:
+            - name: CONFIG_omero_web_server__list
+              value: '[["omero-readonly-server", 4064, "omero"]]'
+          ports:
+          - containerPort: 4080
+            protocol: TCP
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: omero-web
+spec:
+  type: LoadBalancer
+  selector:
+    app: omero-web
+  ports:
+  - name: web
+    port: 4080
+    targetPort: 4080
+    protocol: TCP
