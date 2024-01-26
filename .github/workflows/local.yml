@@ -22,7 +22,9 @@ jobs:
           cache: false
           start-args: '--static-ip 192.168.49.2'
       - name: test cluster
-        run: kubectl get pods -A
+        run: |
+          minikube ip
+          kubectl get pods -A
       - name: build image
         run: |
           export SHELL=/bin/bash
@@ -51,5 +53,7 @@ jobs:
         run: |
           kubectl port-forward svc/omero-web 8080:80 --address='0.0.0.0' &
           sleep 30s
+          echo "localhost:8080"
           curl -I localhost:8080
+          echo "192.168.49.2:80"
           curl -I 192.168.49.2
