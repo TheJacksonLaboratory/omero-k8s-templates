@@ -63,7 +63,7 @@ kind: Service
 metadata:
   name: omero-web
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: omero-web
   ports:

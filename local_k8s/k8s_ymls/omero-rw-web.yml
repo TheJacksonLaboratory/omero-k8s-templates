@@ -27,9 +27,6 @@ spec:
           env:
             - name: CONFIG_omero_web_server__list
               value: '[["omero-server", 4064, "omero"]]'
-          #ports:
-          #- containerPort: 4080
-          #  protocol: TCP
           volumeMounts:
             - name: omero-static-rw
               mountPath: /opt/omero/web/OMERO.web/var
@@ -66,14 +63,9 @@ kind: Service
 metadata:
   name: omero-rw-web
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: omero-rw-web
-#   ports:
-#   - name: web
-#     port: 4080
-#     targetPort: 4080
-#     protocol: TCP
   ports:
   - name: http
     port: 80
@@ -82,4 +74,4 @@ spec:
   - name: https
     port: 443
     targetPort: 443
-    protocol: TCP 
+    protocol: TCP

@@ -38,7 +38,7 @@ kind: Service
 metadata:
   name: omero-web-direct
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: omero-web-direct
   ports:
