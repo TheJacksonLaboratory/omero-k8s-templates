@@ -6,6 +6,7 @@ on:
   push:
     branches: [ main ]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   test:
@@ -19,6 +20,7 @@ jobs:
         uses: medyagh/setup-minikube@latest
         with:
           cache: false
+          start-args: '--static-ip 192.168.49.2'
       - name: test cluster
         run: kubectl get pods -A
       - name: build image
@@ -47,6 +49,7 @@ jobs:
           kubectl exec omero-server -- bash -c "/opt/omero/server/server_venv/bin/omero login -u root -w omero -s 127.0.0.1:4064"
       - name: test web
         run: |
-          kubectl port-forward svc/omero-web 8080:4080 --address='0.0.0.0' &
+          kubectl port-forward svc/omero-web 8080:80 --address='0.0.0.0' &
           sleep 30s
           curl -I localhost:8080
+          curl -I 192.168.49.2
