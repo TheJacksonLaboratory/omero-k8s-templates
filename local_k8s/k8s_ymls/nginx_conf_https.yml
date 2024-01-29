@@ -40,3 +40,4 @@ data:
             autoindex off;
         }
     }
+  csrf_trusted_origins: '["http://web_url:port","https://web_url:port"]'

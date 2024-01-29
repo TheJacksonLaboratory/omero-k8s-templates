@@ -7,7 +7,7 @@ Our local Kubernetes is solely used for testing currently. These templates are n
 4. More persistent port forwarding than `kubectl port-forward`
 
 ## Current tested setup:
-`minikube` running Kubernetes cluster on `CentOS 7`
+`minikube` running Kubernetes cluster on `Rocky 9`
 
 ## Build images
 ```
@@ -16,6 +16,19 @@ cd omero-k8s-templates/local_k8s/containers
 docker build omero-web -t omero-web
 docker build omero-server -t omero-server
 ```
+
+## For testing purposes, create your own SSL certificate
+```
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx.key -out nginx.crt
+cat nginx.key | base64 -w 0
+cat nginx.crt | base64 -w 0
+```
+And put base64 nginx.key and nginx.crt in nginx.sslsecret.yml
+
+## CSRF trusted origins
+When using Django 4 (required by OMERO.web 5.23.0+) with http or https, we need to set the CSRF_TRUSTED_ORIGINS environment variable. This can be set the OMERO config omero.web.csrf_trusted_origins (https://github.com/ome/omero-web/pull/477).
+
+We've put this setting in the Nginx configmap ymls. In nginx_conf_http.yml or nginx_conf_https.yml, replace `http://web_url:port` with your web url and port.
 
 ## Run kubernetes deployments/pods
 ```
@@ -34,8 +47,8 @@ kubectl apply -f omero-web.yml
 ## Forward a local port to an internal pod port, to access OMERO.web
 
 ```
-kubectl apply -f omero-web-direct.yml
 screen -S port-forward
-kubectl port-forward svc/omero-web 6080:4080 --address=0.0.0.0
+kubectl port-forward svc/omero-web 8080:80 --address=0.0.0.0
 ```
-Then access OMERO.web at `localhost:6080`
+Then access OMERO.web at `localhost:8080`
+
