@@ -15,7 +15,8 @@ RUN apt-get install -y -q \
     python3-venv \
     python3-dev \
     postgresql-client \
-    ca-certificates-java
+    ca-certificates-java \
+    vim
 
 # install zeroc-ice
 RUN apt-get install -y -q \
@@ -59,6 +60,10 @@ RUN unzip -q OMERO.server*
 RUN chown -R omero-server OMERO.server-*
 RUN ln -s OMERO.server-*/ OMERO.server
 RUN chown -R omero-server /opt
+ENV STEWARD=https://github.com/glencoesoftware/omero-pc-steward/releases/download/v0.1.0/omero-pc-steward-0.1.0.jar
+RUN wget -q $STEWARD -O /opt/omero/server/OMERO.server/lib/server/omero-pc-steward.jar
+ENV LOGSED='/<logger name="ome.adapters" level="ERROR"\/>/a \ \ <!-- omero-pc-steward memory cleanup logger -->\n  <logger name="com.glencoesoftware" level="INFO"\/>'
+RUN sed -i "$LOGSED" /opt/omero/server/OMERO.server/etc/logback.xml
 
 # Startup scripts, from omero-server-docker
 ADD entrypoint.sh /usr/local/bin/
