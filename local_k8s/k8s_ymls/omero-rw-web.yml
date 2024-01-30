@@ -27,6 +27,11 @@ spec:
           env:
             - name: CONFIG_omero_web_server__list
               value: '[["omero-server", 4064, "omero"]]'
+            - name: CONFIG_omero_web_csrf__trusted__origins
+              valueFrom:
+                configMapKeyRef:
+                  name: nginxconfigmap
+                  key: csrf_trusted_origins
           volumeMounts:
             - name: omero-static-rw
               mountPath: /opt/omero/web/OMERO.web/var
