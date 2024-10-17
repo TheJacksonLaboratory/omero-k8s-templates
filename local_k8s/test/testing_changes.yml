@@ -41,3 +41,11 @@ spec:
     protocol: TCP
   externalIPs:
   - 192.168.49.2 # static IP hardcoded in github action test
+
+---
+
+$patch: delete
+apiVersion: v1
+kind: Secret
+metadata:
+  name: nginx-ssl
