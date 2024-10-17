@@ -1,7 +1,7 @@
 # Kubernetes templates for OMERO as run at The Jackson Laboratory
 The Jackson Laboratory hosts a public image repository using OMERO on Google Cloud at [images.jax.org](https://images.jax.org). These templates are made to mimic that OMERO deployment and related testing environments as closely as possible.
 
-As a lightweight template repository, the current goal is to only require `kubectl` and either a local Kubernetes cluster or Google Cloud Project (GCP). _Kustomize_ is used to provide multiple optional deployment configurations in the GCP yamls, run as `kubectl apply -k`. _In the future this may be upgraded to Helm charts or Terraform._
+As a lightweight template repository, the current goal is to only require `kubectl` and either a local Kubernetes cluster or Google Cloud Project (GCP). _Kustomize_ is used to provide multiple optional deployment configurations in the GCP yamls, run as `kubectl apply -k`.
 
 ## Deployment overview
 ![Schematic of OMERO deployment, explained in words below](gcp_overview.png)

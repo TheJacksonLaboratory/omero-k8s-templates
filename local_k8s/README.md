@@ -1,17 +1,19 @@
 # Local Kubernetes OMERO deployment
-Our local Kubernetes is solely used for testing currently. These templates are not as robust as the GCP ymls, and some things should probably be changed for a production environment:
 
-1. Not running Postgres through Kubernetes, since the database needs to be persistent
-2. Host a separate NFS server somewhere with lots of space for image data files, rather than as a Kubernetes persistent volume
-3. Probably use something larger than minikube to run the Kubernetes cluster
-4. More persistent port forwarding than `kubectl port-forward`
+## Current infrastructure
+- `kubeadm` runs Kubernetes cluster on `Rocky 9`
+- `postgres` baremetal database
+- `calico` networking
 
-## Current tested setup:
-`minikube` running Kubernetes cluster on `Rocky 9`
+Has also been tested with `minikube` on `Rocky 9` and `Centos 7`.
 
 ## Build images
+If using minikube, you first need to access the minikube docker environment
 ```
 eval $(minikube docker-env)
+```
+
+```
 cd omero-k8s-templates/local_k8s/containers
 docker build omero-web -t omero-web
 docker build omero-server -t omero-server
@@ -23,7 +25,11 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx.key -out nginx
 cat nginx.key | base64 -w 0
 cat nginx.crt | base64 -w 0
 ```
-And put base64 nginx.key and nginx.crt in nginx.sslsecret.yml
+And put the base64 nginx.key and nginx.crt in nginx.sslsecret.yml
+
+### Changes used for testing
+- Temporary local nfs volume
+- Temporary postgres database run as kubernetes pod
 
 ## CSRF trusted origins
 When using Django 4 (required by OMERO.web 5.23.0+) with http or https, we need to set the CSRF_TRUSTED_ORIGINS environment variable. This can be set the OMERO config omero.web.csrf_trusted_origins (https://github.com/ome/omero-web/pull/477).
@@ -31,21 +37,13 @@ When using Django 4 (required by OMERO.web 5.23.0+) with http or https, we need 
 We've put this setting in the Nginx configmap ymls. In nginx_conf_http.yml or nginx_conf_https.yml, replace `http://web_url:port` with your web url and port.
 
 ## Run kubernetes deployments/pods
+By using kustomize, we can just apply the whole folder at once:
 ```
-cd omero-k8s-templates/local_k8s/k8s_ymls
-kubectl apply -f omero-secrets.yml
-kubectl apply -f nfs_pv.yml
-kubectl apply -f postgres.yml
-kubectl apply -f omero-server.yml
-kubectl apply -f omero-readonly-secrets.yml
-kubectl apply -f omero-readonly-server.yml
-kubectl apply -f nginx_conf_https.yml
-kubectl apply -f nginx.sslsecret.yml
-kubectl apply -f omero-web.yml
+kubectl apply -k test
 ```
 
 ## Forward a local port to an internal pod port, to access OMERO.web
-
+If using minikube, `port-forward` is needed to expose port:
 ```
 screen -S port-forward
 kubectl port-forward svc/omero-web 8080:80 --address=0.0.0.0

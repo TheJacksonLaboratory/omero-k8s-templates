@@ -20,13 +20,16 @@ spec:
         # This is necessary for the static files to be copied over
         # runAsGroup: 1000
         fsGroup: 1000
+      priorityClassName: nonpreempting
       containers:
         - name: omero-web
           image: omero-web
           imagePullPolicy: Never
           env:
             - name: CONFIG_omero_web_server__list
-              value: '[["omero-readonly-server", 4064, "omero"]]'
+              value: '[["omero-server", 4064, "omero"]]'
+            - name: CONFIG_omero_web_wsgi__args
+              value: '--limit-request-line 8190'
             - name: CONFIG_omero_web_csrf__trusted__origins
               valueFrom:
                 configMapKeyRef:
@@ -68,7 +71,7 @@ kind: Service
 metadata:
   name: omero-web
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: omero-web
   ports:

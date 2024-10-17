@@ -1,7 +1,6 @@
 resources:
-- nfs_pv.yml
-- postgres.yml
 - omero-server.yml
-- omero-readonly-server.yml
-- nginx_conf_http.yml
+- nginx-conf-https.yml
+- nginx-sslsecret.yml
 - omero-web.yml
+- priority.yml

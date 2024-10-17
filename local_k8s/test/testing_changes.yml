@@ -6,12 +6,6 @@ spec:
   template:
     spec:
       containers:
-        - name: omero-web
-          env:
-            - name: CONFIG_omero_web_server__list
-              value: '[["omero-server", 4064, "omero"]]'
-          ports:
-            - containerPort: 4080
         - name: nginx
           image: nginx:1.21.4
           volumeMounts:
@@ -37,7 +31,7 @@ kind: Service
 metadata:
   name: omero-web
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: omero-web
   ports:
@@ -46,12 +40,4 @@ spec:
     targetPort: 80
     protocol: TCP
   externalIPs:
-  - 192.168.49.2
-
----
-
-$patch: delete
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: omero-readonly-server
+  - 192.168.49.2 # static IP hardcoded in github action test
