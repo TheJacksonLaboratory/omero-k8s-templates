@@ -1,7 +1,12 @@
 resources:
 - ../k8s_ymls
 - omero-secrets-example.yml
-- omero-readonly-secrets-example.yml
+- postgres.yml
+- test-namespace.yml
+- test-pv.yml
+
+namespace: test
 
 patchesStrategicMerge:
+- nginx-conf-http.yml
 - testing_changes.yml

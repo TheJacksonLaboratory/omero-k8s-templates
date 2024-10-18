@@ -40,18 +40,18 @@ jobs:
       - name: print pods
         run: kubectl get pods -A
       - name: server logs
-        run: kubectl logs omero-server
+        run: kubectl logs omero-server -n test
       - name: omero logs
         run: |
-          kubectl exec omero-server -- bash -c "tail /opt/omero/server/OMERO.server/var/log/Blitz-0.log"
-          echo $(kubectl exec omero-server -- bash -c "cat /opt/omero/server/OMERO.server/var/log/Blitz-0.log" | grep ERROR)
-          kubectl exec omero-server -- bash -c "tail /opt/omero/server/OMERO.server/var/log/master.err"
+          kubectl exec omero-server -n test -- bash -c "tail /opt/omero/server/OMERO.server/var/log/Blitz-0.log"
+          echo $(kubectl exec omero-server -n test -- bash -c "cat /opt/omero/server/OMERO.server/var/log/Blitz-0.log" | grep ERROR)
+          kubectl exec omero-server -n test -- bash -c "tail /opt/omero/server/OMERO.server/var/log/master.err"
       - name: test servers
         run: |
-          kubectl exec omero-server -- bash -c "/opt/omero/server/server_venv/bin/omero login -u root -w omero -s 127.0.0.1:4064"
+          kubectl exec omero-server -n test -- bash -c "/opt/omero/server/server_venv/bin/omero login -u root -w omero -s 127.0.0.1:4064"
       - name: test web
         run: |
-          kubectl port-forward svc/omero-web 8080:80 --address='0.0.0.0' &
+          kubectl port-forward svc/omero-web -n test 8080:80 --address='0.0.0.0' &
           sleep 30s
           echo "localhost:8080"
           curl -I localhost:8080

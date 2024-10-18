@@ -25,7 +25,7 @@ spec:
   sessionAffinity: None
 
   # Expose the service internally only
-  type: LoadBalancer
+  type: ClusterIP
 
 ---
 # Run a vanilla omero server instance
@@ -37,6 +37,7 @@ metadata:
   labels:
     app: omero-server
 spec:
+  priorityClassName: nonpreempting
   containers:
     - name: omero-server
       image: omero-server
